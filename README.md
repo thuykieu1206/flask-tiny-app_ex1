@@ -29,8 +29,5 @@ Dự án này là một ứng dụng web sử dụng Flask để quản lý và 
    Mở trình duyệt và truy cập `http://127.0.0.1:5000`.
 
 ## Link Project Đã Triển Khai
-- [Link đến project trên GitHub](https://github.com/thuykieu1206/flask-tiny-app_ex1)
+- [Link đến project trên GitHub]([https://github.com/thuykieu1206/flask-tiny-app_ex1](https://github.com/thuykieu1206/flask-tiny-app_ex1/tree/main))
 
-```
-
-Bạn có thể thay thế `[Tên bạn]` và `[Mã sinh viên của bạn]` bằng thông tin cá nhân của mình. Nếu cần thêm thông tin gì khác, hãy cho tôi biết!
