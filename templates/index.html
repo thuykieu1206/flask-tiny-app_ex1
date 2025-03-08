@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách việc cần làm</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .navbar {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar button {
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .navbar button:hover {
+            background-color: #cc0000;
+        }
+        .todo-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .alert {
+            display: none; /* Ẩn thông báo mặc định */
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            padding: 8px;
+            width: 70%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 8px 15px;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #006d9e;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+        }
+        li input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .pagination {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .pagination a {
+            color: #008CBA;
+            text-decoration: none;
+            padding: 5px 10px;
+        }
+        .pagination a:hover {
+            background-color: #ddd;
+            border-radius: 4px;
+        }
+        .pagination span {
+            margin: 0 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <span>Chào, {{ current_user.username }}</span>
+        <form action="{{ url_for('logout') }}" method="POST" style="display:inline;">
+            <button type="submit">Đăng xuất</button>
+        </form>
+    </div>
+    <div class="todo-container">
+        <h1>Danh sách việc cần làm của tôi</h1>
+        
+        <!-- Hiển thị thông báo flash -->
+        <div class="alert" id="alert-message">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {{ messages[0] }} <!-- Hiển thị thông báo đầu tiên -->
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <!-- Form thêm todo -->
+        <form action="{{ url_for('add_todo') }}" method="POST">
+            <input type="text" name="todo_name" placeholder="Thêm một nhiệm vụ mới" required>
+            <button type="submit">Thêm vào</button>
+        </form>
+
+        <!-- Danh sách todos và xóa -->
+        <form action="{{ url_for('delete_tasks') }}" method="POST">
+            <ul>
+                {% for item in items %}
+                <li>
+                    <input type="checkbox" name="task_ids" value="{{ item.id }}">
+                    {{ item.name }}
+                    <!-- Hiển thị trạng thái checked nếu có -->
+                    {% if item.checked %}
+                        <span style="text-decoration: line-through; color: #888;"> (Đã hoàn thành)</span>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% if items %}
+                <button type="submit">Xóa đã chọn</button>
+            {% endif %}
+        </form>
+
+        <!-- Phân trang -->
+        {% if pagination.pages > 1 %}
+        <div class="pagination">
+            {% if pagination.has_prev %}
+                <a href="{{ url_for('home', page=pagination.prev_num) }}">Trước</a>
+            {% endif %}
+            <span>Trang {{ pagination.page }} / {{ pagination.pages }}</span>
+            {% if pagination.has_next %}
+                <a href="{{ url_for('home', page=pagination.next_num) }}">Sau</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // Hiển thị thông báo flash nếu có
+        document.addEventListener('DOMContentLoaded', function() {
+            const alertMessage = document.getElementById('alert-message');
+            if (alertMessage.textContent.trim() !== '') {
+                alertMessage.style.display = 'block';
+                // Tự động ẩn thông báo sau 3 giây
+                setTimeout(() => {
+                    alertMessage.style.display = 'none';
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>
