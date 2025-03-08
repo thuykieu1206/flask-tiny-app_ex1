@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Người Dùng</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Quản lý Người Dùng</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên Người Dùng</th>
+                    <th>Trạng Thái</th>
+                    <th>Hành Động</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{% if user.blocked %}Đã Khóa{% else %}Hoạt Động{% endif %}</td>
+                    <td>
+                        {% if user.blocked %}
+                            <form action="{{ url_for('unblock_user', user_id=user.id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-success">Mở Khóa</button>
+                            </form>
+                        {% else %}
+                            <form action="{{ url_for('block_user', user_id=user.id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-danger">Khóa</button>
+                            </form>
+                        {% endif %}
+                        <form action="{{ url_for('reset_password', user_id=user.id) }}" method="POST" style="display:inline;">
+                            <input type="text" name="new_password" placeholder="Mật khẩu mới" required>
+                            <button type="submit" class="btn btn-warning">Reset</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('home') }}" class="btn btn-primary">Quay lại</a>
+    </div>
+</body>
+</html>
